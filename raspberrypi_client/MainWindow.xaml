@@ -1,0 +1,27 @@
+﻿<Window x:Class="raspberrypi_client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:raspberrypi_client"
+        mc:Ignorable="d"
+        Title="raspberrypi_client" Height="346" Width="605">
+    <Grid Margin="0,0,0,6">
+        <TextBox x:Name="ip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.130" VerticalAlignment="Top" Width="163"/>
+        <TextBox x:Name="port" HorizontalAlignment="Left" Height="22" Margin="271,16,0,0" TextWrapping="Wrap" Text="6666" VerticalAlignment="Top" Width="88"/>
+        <RichTextBox x:Name="richTextBox" Margin="36,51,33,83" VerticalScrollBarVisibility="Visible" Grid.ColumnSpan="2">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text=""/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+        <TextBox x:Name="sendMessage" Margin="120,0,285,39" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom"/>
+        <Button x:Name="send" Content="Sent" Margin="0,0,158,39" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="110"/>
+        <Button x:Name="close" Content="Close" Margin="0,0,33,39" Click="close_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="105"/>
+        <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,13,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="221,13,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="MESSAGE" Content="Message:" HorizontalAlignment="Left" Margin="48,247,0,0" VerticalAlignment="Top"/>
+
+    </Grid>
+</Window>
