@@ -13,33 +13,51 @@ namespace raspberrypi_client
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int localport;
-        private Thread Listen;
-        private TcpListener tcpListener;
-        private static string message = "";
+        Socket c;
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        private void InitClient()
+        {
+            int port = Convert.ToInt32(xport.Text);
+            string host = xip.Text;
+            IPAddress ip = IPAddress.Parse(host);
+            IPEndPoint ipe = null;
+            //foreach (IPAddress _IPAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+            //{
+            //    if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
+            //    {
+            //        ip = _IPAddress;
+            //        ipe = new IPEndPoint(ip, port);//把ip和端口转化为IPEndPoint实例
+            //    }
+            //}
+            ipe = new IPEndPoint(ip, port);//把ip和端口转化为IPEndPoint实例
+            c = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//创建一个Socket
+            ShowText("连接到服务端...");
+            c.Connect(ipe);//连接到服务器
+        }
+
         private void StartListen()
         {
             byte[] buffer = new byte[8192];
-            message = "";
             try
             {
-                tcpListener = new TcpListener(IPAddress.Any, localport);//tcpListener = new TcpListener(ipLocalEndPoint);//
-                tcpListener.Start();
-                while (true)
-                {
-                    TcpClient tcpclient = tcpListener.AcceptTcpClient();
-                    NetworkStream streamToClient = tcpclient.GetStream();
-                    int bytesRead = streamToClient.Read(buffer, 0, 8192);
-                    message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    richTextBox.AppendText(message);
-                    //richTextBox.ScrollToCaret();
-                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void connect_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                InitClient();
             }
             catch (Exception ex)
             {
@@ -51,57 +69,37 @@ namespace raspberrypi_client
         {
             try
             {
-                TcpClient client = new TcpClient();
-                IPAddress ip1 = IPAddress.Parse(ip.Text);//{ 111, 186, 100, 46 }
-                client.Connect(ip1, Convert.ToInt32(port.Text));
-                localport = Convert.ToInt32(((IPEndPoint)client.Client.LocalEndPoint).Port.ToString());
-                //if (this.tcpListener != null)
-                //{
-                //    tcpListener.Stop();
-                //}
-                //if (Listen != null)
-                //{
-                //    Listen.Abort();
-                //    Listen = null;
-                //}
-                //if (Listen == null)
-                //{
-                //    Listen = new Thread(new ThreadStart(this.StartListen));
-                //    Listen.IsBackground = true;
-                //    Listen.Start();
-                //}
-                Stream streamToServer = client.GetStream();
-                //lock (streamToServer)
-                //{
-                    byte[] buffer = Encoding.UTF8.GetBytes(sendMessage.Text.ToCharArray());
-                    streamToServer.Write(buffer, 0, buffer.Length);
-                    streamToServer.Flush();
-                    streamToServer.Close();
-                    client.Close();
-                    richTextBox.AppendText(sendMessage.Text);
-                    sendMessage.Clear();
-                //}
+                ShowText("发送消息到服务端...");
+                string sendStr = sendMessage.Text;
+                byte[] bs = Encoding.ASCII.GetBytes(sendStr);
+                c.Send(bs, bs.Length, 0);
+
+                string recvStr = "";
+                byte[] recvBytes = new byte[1024];
+                int bytes;
+                bytes = c.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
+                recvStr += Encoding.UTF8.GetString(recvBytes, 0, bytes);
+
+                ShowText("服务器返回信息：" + recvStr);
             }
-            catch (Exception ex)
+            catch (ArgumentNullException ex1)
             {
-                MessageBox.Show(ex.Message);
+                Console.WriteLine("ArgumentNullException:{0}", ex1);
             }
+            catch (SocketException ex2)
+            {
+                Console.WriteLine("SocketException:{0}", ex2);
+            }
+        }
+
+        private void ShowText(string text)
+        {
+            richTextBox.AppendText(text + "\n");
         }
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
             System.Diagnostics.Process.GetCurrentProcess().Kill();
-            if (this.tcpListener != null)
-            {
-                tcpListener.Stop();
-            }
-            if (Listen != null)
-            {
-                if (Listen.ThreadState == ThreadState.Running)
-                {
-                    Listen.Abort();
-                }
-            }
             Application.Current.Shutdown();
         }
     }
