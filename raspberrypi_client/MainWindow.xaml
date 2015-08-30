@@ -8,12 +8,12 @@
         mc:Ignorable="d"
         Title="raspberrypi_client" Height="477" Width="605">
     <Grid Margin="0,0,0,6">
-        <d3:ChartPlotter x:Name="plotter" Margin="24,61,0,83" HorizontalAlignment="Left" Width="312"/>
-        <d3:ChartPlotter x:Name="plotter_1" Margin="352,61,37,0" Height="146" VerticalAlignment="Top"/>
-        <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.130" VerticalAlignment="Top" Width="132"/>
-        <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="6666" VerticalAlignment="Top" Width="88"/>
+        <d3:ChartPlotter x:Name="plotter" Margin="24,61,261,83"/>
+        <d3:ChartPlotter x:Name="plotter_1" Margin="0,61,37,0" Height="146" VerticalAlignment="Top" HorizontalAlignment="Right" Width="208"/>
+        <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
+        <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
         <TextBox x:Name="sendMessage" Margin="93,0,261,37" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom"/>
-        <RichTextBox x:Name="richTextBox" Margin="370,231,37,83" VerticalScrollBarVisibility="Visible">
+        <RichTextBox x:Name="richTextBox" Margin="0,231,37,83" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="190">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
