@@ -6,14 +6,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:raspberrypi_client"
         mc:Ignorable="d"
-        Title="raspberrypi_client" Height="477" Width="605">
-    <Grid Margin="0,0,0,6">
-        <d3:ChartPlotter x:Name="plotter" Margin="24,61,261,83"/>
-        <d3:ChartPlotter x:Name="plotter_1" Margin="0,61,37,0" Height="146" VerticalAlignment="Top" HorizontalAlignment="Right" Width="208"/>
+        Title="raspberrypi_client" Height="504" Width="677">
+    <Grid Margin="0,0,2,0">
+        <d3:ChartPlotter x:Name="plotter" Margin="24,61,290,130"/>
+        <d3:ChartPlotter x:Name="plotter_1" Margin="0,61,37,0" Height="146" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
         <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
-        <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
-        <TextBox x:Name="sendMessage" Margin="93,0,261,37" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom"/>
-        <RichTextBox x:Name="richTextBox" Margin="0,231,37,83" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="190">
+        <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,17,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
+        <TextBox x:Name="sendMessage" Margin="89,0,0,79" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="288"/>
+        <RichTextBox x:Name="richTextBox" Margin="0,231,37,130" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="222">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
@@ -22,9 +22,16 @@
         </RichTextBox>
         <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22"/>
         <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22"/>
-        <Label x:Name="MESSAGE" Content="Message:" HorizontalAlignment="Left" Margin="24,0,0,37" Height="25" VerticalAlignment="Bottom"/>
-        <Button x:Name="send" Content="Sent" Margin="0,0,151,39" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="94"/>
-        <Button x:Name="close" Content="Close" Margin="0,0,33,39" Click="close_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="94"/>
-        <Button x:Name="connect" Content="Connect" Margin="0,16,37,0" HorizontalAlignment="Right" Width="101" Height="22" VerticalAlignment="Top" Click="connect_Click"/>
+        <Label x:Name="MESSAGE" Content="Message:" HorizontalAlignment="Left" Margin="20,0,0,79" Height="25" VerticalAlignment="Bottom"/>
+        <Button x:Name="send" Content="Sent" Margin="408,0,0,79" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
+        <Button x:Name="close" Content="Close" Margin="0,0,37,32" Click="close_Click" Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="94"/>
+        <Button x:Name="connect" Content="Connect" Margin="358,17,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
+        <Label x:Name="Year" Content="Year:" HorizontalAlignment="Left" Margin="46,0,0,32" Height="25" VerticalAlignment="Bottom"/>
+        <Label x:Name="Mon" Content="Mon:" HorizontalAlignment="Left" Margin="182,0,0,30" Height="25" VerticalAlignment="Bottom"/>
+        <Label x:Name="Day" Content="Day:" HorizontalAlignment="Left" Margin="281,0,0,30" Height="25" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="year" Margin="89,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="88" Height="23" VerticalAlignment="Bottom"/>
+        <TextBox x:Name="mon" Margin="227,0,0,32" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
+        <TextBox x:Name="day" Margin="332,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
+        <Button x:Name="download" Content="DownLoad" Margin="408,0,0,32" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
     </Grid>
 </Window>
