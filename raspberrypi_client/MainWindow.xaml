@@ -12,7 +12,7 @@
         <d3:ChartPlotter x:Name="plotter_1" Margin="0,61,37,0" Height="146" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
         <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
         <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,17,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
-        <TextBox x:Name="sendMessage" Margin="89,0,0,79" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="288"/>
+        <TextBox x:Name="sendMessage" Margin="162,0,0,79" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
         <RichTextBox x:Name="richTextBox" Margin="0,231,37,130" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="222">
             <FlowDocument>
                 <Paragraph>
@@ -22,7 +22,7 @@
         </RichTextBox>
         <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22"/>
         <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22"/>
-        <Label x:Name="MESSAGE" Content="Message:" HorizontalAlignment="Left" Margin="20,0,0,79" Height="25" VerticalAlignment="Bottom"/>
+        <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="46,0,0,77" Height="25" VerticalAlignment="Bottom"/>
         <Button x:Name="send" Content="Sent" Margin="408,0,0,79" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
         <Button x:Name="close" Content="Close" Margin="0,0,37,32" Click="close_Click" Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="94"/>
         <Button x:Name="connect" Content="Connect" Margin="358,17,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
@@ -33,5 +33,6 @@
         <TextBox x:Name="mon" Margin="227,0,0,32" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
         <TextBox x:Name="day" Margin="332,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
         <Button x:Name="download" Content="DownLoad" Margin="408,0,0,32" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
+        <Label x:Name="second" Content="(s)" HorizontalAlignment="Left" Margin="341,0,0,77" Height="25" VerticalAlignment="Bottom"/>
     </Grid>
 </Window>

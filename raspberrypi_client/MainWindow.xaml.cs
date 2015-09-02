@@ -9,6 +9,7 @@ using System.Net.Sockets;
 using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using System.IO;
+using System.Windows.Media;
 
 namespace raspberrypi_client
 {
@@ -19,6 +20,7 @@ namespace raspberrypi_client
     {
         Socket c;
         private Thread Listen;
+        int num = 0;
         ObservableDataSource<Point> source1 = null;
         ObservableDataSource<Point> source2 = null;
         ObservableDataSource<Point> source3 = null;
@@ -43,10 +45,10 @@ namespace raspberrypi_client
             source4.SetXYMapping(p => p);
 
             // Add all three graphs. Colors are not specified and chosen random
-            plotter.AddLineGraph(source1, 2, "Data row 1");
-            plotter.AddLineGraph(source2, 2, "Data row 2");
-            plotter.AddLineGraph(source3, 2, "Data row 3");
-            plotter.AddLineGraph(source4, 2, "Data row 4");
+            plotter.AddLineGraph(source1, Colors.Red, 2, "TEMP");
+            plotter.AddLineGraph(source2, Colors.Black, 2, "HUMI");
+            plotter.AddLineGraph(source3, Colors.Blue, 2, "DUST1");
+            plotter.AddLineGraph(source4, Colors.Yellow, 2, "DUST2");
 
         }
 
@@ -70,7 +72,6 @@ namespace raspberrypi_client
         {
             CultureInfo culture = CultureInfo.InvariantCulture;
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            int num = 0;
             string[] values = recvStr.Split(' ');//new string[4];//line.Split(',');
             values[0] = (num++).ToString();
 
@@ -93,14 +94,12 @@ namespace raspberrypi_client
 
         private void StartListen()
         {
-            //CultureInfo culture = CultureInfo.InvariantCulture;
-            //Assembly executingAssembly = Assembly.GetExecutingAssembly();
             //try
             //{
             string recvStr = "";
             byte[] recvBytes = new byte[64];
             int bytes = 0;
-            int num = 0;
+            num = 0;
             while (true)
             {
                 bytes = c.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
@@ -109,25 +108,6 @@ namespace raspberrypi_client
                     recvStr += Encoding.UTF8.GetString(recvBytes, 0, bytes).TrimEnd('\n');
                     richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
                     DrawingLines(recvStr);
-                    //string[] values = recvStr.Split(' ');//new string[4];//line.Split(',');
-                    //values[0] = (num++).ToString();
-
-                    //double x = Double.Parse(values[0], culture);
-                    //double y1 = Double.Parse(values[1], culture);
-                    //double y2 = Double.Parse(values[2], culture);
-                    //double y3 = Double.Parse(values[3], culture);
-                    //double y4 = Double.Parse(values[4], culture);
-
-                    //Point p1 = new Point(x, y1);
-                    //Point p2 = new Point(x, y2);
-                    //Point p3 = new Point(x, y3);
-                    //Point p4 = new Point(x, y4);
-
-                    //source1.AppendAsync(Dispatcher, p1);
-                    //source2.AppendAsync(Dispatcher, p2);
-                    //source3.AppendAsync(Dispatcher, p3);
-                    //source4.AppendAsync(Dispatcher, p4);
-
                     recvStr = "";
                 }
                 Array.Clear(recvBytes, 0, recvBytes.Length);
@@ -155,10 +135,10 @@ namespace raspberrypi_client
         {
             try
             {
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Send to Server: " + sendMessage.Text);
-                string sendStr = sendMessage.Text;
+                string sendStr = "change_interval " + sendMessage.Text +"\0";
                 byte[] bs = Encoding.ASCII.GetBytes(sendStr);
                 c.Send(bs, bs.Length, 0);
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + "change interval " + sendMessage.Text +"s");
                 sendMessage.Clear();
             }
             catch (ArgumentNullException ex1)
@@ -276,6 +256,5 @@ namespace raspberrypi_client
                 return false;
             }
         }
-
     }
 }
