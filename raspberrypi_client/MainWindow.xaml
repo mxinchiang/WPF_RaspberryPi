@@ -6,14 +6,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:raspberrypi_client"
         mc:Ignorable="d"
-        Title="raspberrypi_client" Height="504" Width="677">
+        Title="SIEMENS DustSensor Client" Height="504" Width="677">
     <Grid Margin="0,0,2,0">
         <d3:ChartPlotter x:Name="plotter" Margin="24,61,290,130"/>
-        <d3:ChartPlotter x:Name="plotter_1" Margin="0,61,37,0" Height="146" VerticalAlignment="Top" HorizontalAlignment="Right" Width="222"/>
         <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
         <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,17,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
         <TextBox x:Name="sendMessage" Margin="162,0,0,79" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
-        <RichTextBox x:Name="richTextBox" Margin="0,231,37,130" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="222">
+        <RichTextBox x:Name="richTextBox" Margin="0,61,37,130" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="222">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
