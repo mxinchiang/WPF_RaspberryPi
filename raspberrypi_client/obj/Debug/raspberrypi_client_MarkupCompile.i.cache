@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\obj\Debug\
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\
 raspberrypi_client
 none
 false
 DEBUG;TRACE
-C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\App.xaml
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\App.xaml
 11151548125
 
-91663352465
-15-997183845
+6-68634650
+141884125062
 MainWindow.xaml;
 
-False
+True
 

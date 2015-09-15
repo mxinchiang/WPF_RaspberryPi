@@ -12,3 +12,17 @@ C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\obj\Debug\raspberry
 C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.csproj.GenerateResource.Cache
 C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.exe
 C:\Users\jiang\Desktop\raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.pdb
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\bin\Debug\raspberrypi_client.exe.config
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.pdb
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\bin\Debug\raspberrypi_client.exe
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\bin\Debug\raspberrypi_client.pdb
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.csprojResolveAssemblyReference.cache
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\MainWindow.g.cs
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\App.g.cs
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client_MarkupCompile.cache
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client_MarkupCompile.lref
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\MainWindow.baml
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.g.resources
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.Properties.Resources.resources
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.csproj.GenerateResource.Cache
+C:\Users\jiang\Desktop\WPF_raspberrypi_client\raspberrypi_client\obj\Debug\raspberrypi_client.exe

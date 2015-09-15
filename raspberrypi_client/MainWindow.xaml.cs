@@ -25,6 +25,8 @@ namespace raspberrypi_client
         ObservableDataSource<Point> source2 = null;
         ObservableDataSource<Point> source3 = null;
         ObservableDataSource<Point> source4 = null;
+        ObservableDataSource<Point> source5 = null;
+        ObservableDataSource<Point> source6 = null;
 
         public MainWindow()
         {
@@ -44,11 +46,19 @@ namespace raspberrypi_client
             source4 = new ObservableDataSource<Point>();
             source4.SetXYMapping(p => p);
 
+            source5 = new ObservableDataSource<Point>();
+            source5.SetXYMapping(p => p);
+
+            source6 = new ObservableDataSource<Point>();
+            source6.SetXYMapping(p => p);
+
             // Add all three graphs. Colors are not specified and chosen random
-            plotter.AddLineGraph(source1, Colors.Red, 2, "TEMP");
-            plotter.AddLineGraph(source2, Colors.Black, 2, "HUMI");
-            plotter.AddLineGraph(source3, Colors.Blue, 2, "DUST1");
-            plotter.AddLineGraph(source4, Colors.Yellow, 2, "DUST2");
+            plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
+            plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
+            plotterP.AddLineGraph(source3, Colors.Black, 2, "PRESS");
+            plotterD1.AddLineGraph(source4, Colors.Blue, 2, "DUST1");
+            plotterD2.AddLineGraph(source5, Colors.DarkSeaGreen, 2, "DUST2");
+            plotterD3.AddLineGraph(source6, Colors.CadetBlue, 2, "DUST3");
 
         }
 
@@ -80,16 +90,22 @@ namespace raspberrypi_client
             double y2 = Double.Parse(values[2], culture);
             double y3 = Double.Parse(values[3], culture);
             double y4 = Double.Parse(values[4], culture);
+            double y5 = Double.Parse(values[5], culture);
+            //double y6 = Double.Parse(values[6], culture);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
             Point p3 = new Point(x, y3);
             Point p4 = new Point(x, y4);
+            Point p5 = new Point(x, y5);
+            //Point p6 = new Point(x, y6);
 
             source1.AppendAsync(Dispatcher, p1);
             source2.AppendAsync(Dispatcher, p2);
             source3.AppendAsync(Dispatcher, p3);
             source4.AppendAsync(Dispatcher, p4);
+            source5.AppendAsync(Dispatcher, p5);
+            //source6.AppendAsync(Dispatcher, p6);
         }
 
         private void StartListen()

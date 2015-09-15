@@ -6,32 +6,82 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:raspberrypi_client"
         mc:Ignorable="d"
-        Title="SIEMENS DustSensor Client" Height="504" Width="677">
-    <Grid Margin="0,0,2,0">
-        <d3:ChartPlotter x:Name="plotter" Margin="24,61,290,130"/>
-        <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
-        <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,17,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
-        <TextBox x:Name="sendMessage" Margin="162,0,0,79" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
-        <RichTextBox x:Name="richTextBox" Margin="0,61,37,130" VerticalScrollBarVisibility="Visible" HorizontalAlignment="Right" Width="222">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text=""/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
-        <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22"/>
-        <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22"/>
-        <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="46,0,0,77" Height="25" VerticalAlignment="Bottom"/>
-        <Button x:Name="send" Content="Sent" Margin="408,0,0,79" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
-        <Button x:Name="close" Content="Close" Margin="0,0,37,32" Click="close_Click" Height="70" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="94"/>
-        <Button x:Name="connect" Content="Connect" Margin="358,17,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
-        <Label x:Name="Year" Content="Year:" HorizontalAlignment="Left" Margin="46,0,0,32" Height="25" VerticalAlignment="Bottom"/>
-        <Label x:Name="Mon" Content="Mon:" HorizontalAlignment="Left" Margin="182,0,0,30" Height="25" VerticalAlignment="Bottom"/>
-        <Label x:Name="Day" Content="Day:" HorizontalAlignment="Left" Margin="281,0,0,30" Height="25" VerticalAlignment="Bottom"/>
-        <TextBox x:Name="year" Margin="89,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="88" Height="23" VerticalAlignment="Bottom"/>
-        <TextBox x:Name="mon" Margin="227,0,0,32" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
-        <TextBox x:Name="day" Margin="332,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
-        <Button x:Name="download" Content="DownLoad" Margin="408,0,0,32" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="90"/>
-        <Label x:Name="second" Content="(s)" HorizontalAlignment="Left" Margin="341,0,0,77" Height="25" VerticalAlignment="Bottom"/>
+        Title="SIEMENS DustSensor Client" Height="600" Width="800">
+    <Grid Name="gridMain">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="400*" />
+            <RowDefinition Height="120" />
+        </Grid.RowDefinitions>
+        <Grid Name="gridColumn1" Grid.Row="0">
+            <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22" Width="24"/>
+            <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22" Width="45"/>
+            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
+            <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
+            <Button x:Name="connect" Content="Connect" Margin="358,16,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
+        </Grid>
+        <Grid Name="gridColumn2" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Width="5"></GridSplitter>
+            <GridSplitter Width="5"></GridSplitter>
+            <Grid Name="gridLeftColumn" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <d3:ChartPlotter x:Name="plotterT" Grid.Row="0"/>
+                <d3:ChartPlotter x:Name="plotterP" Grid.Row="1"/>
+            </Grid>
+            <Grid Name="gridMiddleColumn" Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <d3:ChartPlotter x:Name="plotterD1" Grid.Row="0"/>
+                <d3:ChartPlotter x:Name="plotterD2" Grid.Row="1"/>
+                <d3:ChartPlotter x:Name="plotterD3" Grid.Row="2"/>
+            </Grid>
+            <Grid Name="gridRightColumn" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="14*"/>
+                    <RowDefinition Height="43*"/>
+                </Grid.RowDefinitions>
+                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
+                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,53,10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
+                <RichTextBox x:Name="richTextBox" Margin="10,35,10,0" Grid.Row="1" VerticalScrollBarVisibility="Visible" IsReadOnly="True">
+                    <FlowDocument>
+                        <Paragraph>
+                            <Run Text=""/>
+                        </Paragraph>
+                    </FlowDocument>
+                </RichTextBox>
+                <Label x:Name="label" Content="MessageBox：" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="94"/>
+                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_2" Margin="25,62,23,0" VerticalAlignment="Top" Height="26"/>
+                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_1" Margin="25,10,23,0" VerticalAlignment="Top" Height="26"/>
+                <Label x:Name="label1" Content="Flood warning" Margin="28,5,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16" FontWeight="Bold" Foreground="#FF00C800"/>
+                <Label x:Name="label1_Copy" Content="Shake warning" Margin="28,57,20,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Black" FontSize="16" Foreground="#FF00C800"/>
+            </Grid>
+        </Grid>
+        <Grid Name="gridColumn3" Grid.Row="2" Margin="0,0,0,0">
+            <Label x:Name="Year" Content="Year:" HorizontalAlignment="Left" Margin="46,0,0,32" Height="25" VerticalAlignment="Bottom"/>
+            <Label x:Name="Mon" Content="Mon:" HorizontalAlignment="Left" Margin="182,0,0,32" Height="25" VerticalAlignment="Bottom"/>
+            <Label x:Name="Day" Content="Day:" HorizontalAlignment="Left" Margin="281,0,0,32" Height="25" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="year" Margin="89,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="88" Height="23" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="mon" Margin="227,0,0,32" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
+            <TextBox x:Name="day" Margin="332,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
+            <Button x:Name="download" Content="DownLoad log" Margin="398,0,0,33" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
+            <Label x:Name="second" Content="(s)" HorizontalAlignment="Left" Margin="341,0,0,77" Height="25" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="sendMessage" Margin="162,0,0,77" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
+            <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="46,0,0,77" Height="25" VerticalAlignment="Bottom"/>
+            <Button x:Name="send" Content="Change interval" Margin="398,0,0,77" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
+            <Button x:Name="close" Content="Close" Margin="518,0,0,33" Click="close_Click" Height="67" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="94"/>
+        </Grid>
     </Grid>
 </Window>
