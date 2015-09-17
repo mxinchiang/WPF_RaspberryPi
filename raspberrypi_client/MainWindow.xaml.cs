@@ -55,10 +55,10 @@ namespace raspberrypi_client
             // Add all three graphs. Colors are not specified and chosen random
             plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
             plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
-            plotterP.AddLineGraph(source3, Colors.Black, 2, "PRESS");
-            plotterD1.AddLineGraph(source4, Colors.Blue, 2, "DUST1");
-            plotterD2.AddLineGraph(source5, Colors.DarkSeaGreen, 2, "DUST2");
-            plotterD3.AddLineGraph(source6, Colors.CadetBlue, 2, "DUST3");
+            plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST1");
+            plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST2");
+            plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST3");
+            plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
 
         }
 
@@ -82,7 +82,7 @@ namespace raspberrypi_client
         {
             CultureInfo culture = CultureInfo.InvariantCulture;
             Assembly executingAssembly = Assembly.GetExecutingAssembly();
-            string[] values = recvStr.Split(' ');//new string[4];//line.Split(',');
+            string[] values = recvStr.Split(' ');
             values[0] = (num++).ToString();
 
             double x = Double.Parse(values[0], culture);
@@ -173,7 +173,14 @@ namespace raspberrypi_client
             else
             {
                 string errorinfo;
-                string localpath = @"C:\Users\jiang\Desktop\raspberrypi_client";
+
+                System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
+                dlg.Description = "选择要保存日志文件的路径";
+                System.Windows.Interop.HwndSource source = PresentationSource.FromVisual(this) as System.Windows.Interop.HwndSource;
+                System.Windows.Forms.IWin32Window win = new OldWindow(source.Handle);
+                System.Windows.Forms.DialogResult result = dlg.ShowDialog(win);
+                string localpath = dlg.SelectedPath;
+
                 string filename = year.Text + "-" + mon.Text + "-" + day.Text + ".txt";
                 FtpUpDown ftp = new FtpUpDown(xip.Text, "pi", "raspberry");
                 bool bol = ftp.Download(localpath, filename, out errorinfo);
@@ -243,7 +250,7 @@ namespace raspberrypi_client
                     errorinfo = string.Format("Local File {0} already exists, can not be downloaded", newFileName);
                     return false;
                 }
-                string url = "ftp://" + ftpServerIP + "//home/pi/mxin/TestFile/" + fileName;
+                string url = "ftp://" + ftpServerIP + "//home/pi/TestFile/" + fileName;
                 Connect(url); 
                 reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
@@ -272,5 +279,20 @@ namespace raspberrypi_client
                 return false;
             }
         }
+    }
+
+    public class OldWindow : System.Windows.Forms.IWin32Window
+    {
+        IntPtr _handle;
+        public OldWindow(IntPtr handle)
+        {
+            _handle = handle;
+        }
+        #region IWin32Window Members
+        IntPtr System.Windows.Forms.IWin32Window.Handle
+        {
+            get { return _handle; }
+        }
+        #endregion
     }
 }

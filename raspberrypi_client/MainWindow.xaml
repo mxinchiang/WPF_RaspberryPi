@@ -16,7 +16,7 @@
         <Grid Name="gridColumn1" Grid.Row="0">
             <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22" Width="24"/>
             <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22" Width="45"/>
-            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.0.109" VerticalAlignment="Top" Width="132"/>
+            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.1.106" VerticalAlignment="Top" Width="132"/>
             <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
             <Button x:Name="connect" Content="Connect" Margin="358,16,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
         </Grid>
@@ -50,23 +50,24 @@
             </Grid>
             <Grid Name="gridRightColumn" Grid.Column="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="14*"/>
-                    <RowDefinition Height="43*"/>
+                    <RowDefinition Height="6*"/>
+                    <RowDefinition Height="13*"/>
                 </Grid.RowDefinitions>
-                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
-                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,53,10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
-                <RichTextBox x:Name="richTextBox" Margin="10,35,10,0" Grid.Row="1" VerticalScrollBarVisibility="Visible" IsReadOnly="True">
+                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,22,10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
+                <Rectangle Fill="#FFC8C8C8" Height="45" Margin="10,79,10,0" RadiusY="10.031" RadiusX="10.031" Stroke="#FF000000" StrokeThickness="0" VerticalAlignment="Top"/>
+                <RichTextBox x:Name="richTextBox" Margin="10,28,10,0" Grid.Row="1" VerticalScrollBarVisibility="Visible" IsReadOnly="True">
                     <FlowDocument>
                         <Paragraph>
                             <Run Text=""/>
                         </Paragraph>
                     </FlowDocument>
                 </RichTextBox>
-                <Label x:Name="label" Content="MessageBox：" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="94"/>
-                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_2" Margin="25,62,23,0" VerticalAlignment="Top" Height="26"/>
-                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_1" Margin="25,10,23,0" VerticalAlignment="Top" Height="26"/>
-                <Label x:Name="label1" Content="Flood warning" Margin="28,5,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16" FontWeight="Bold" Foreground="#FF00C800"/>
-                <Label x:Name="label1_Copy" Content="Shake warning" Margin="28,57,20,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Black" FontSize="16" Foreground="#FF00C800"/>
+                <Label x:Name="label" Content="MessageBox：" HorizontalAlignment="Left" Margin="10,3,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="94"/>
+                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_2" Margin="25,89,23,0" VerticalAlignment="Top" Height="26"/>
+                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_1" Margin="25,33,23,0" VerticalAlignment="Top" Height="26"/>
+                <Label x:Name="label1" Content="Flood warning" Margin="28,28,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16" FontWeight="Bold" Foreground="#FF00C800" Height="31"/>
+                <Label x:Name="label1_Copy" Content="Shake warning" Margin="25,84,23,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Black" FontSize="16" Foreground="#FF00C800" Height="31"/>
+                <Label x:Name="label2" Content="Abnormal alarm：" Margin="10,-2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="115" Height="25"/>
             </Grid>
         </Grid>
         <Grid Name="gridColumn3" Grid.Row="2" Margin="0,0,0,0">
