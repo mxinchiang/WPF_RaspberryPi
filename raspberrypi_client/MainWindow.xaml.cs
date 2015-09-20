@@ -90,21 +90,21 @@ namespace raspberrypi_client
             double y2 = Double.Parse(values[2], culture);
             double y3 = Double.Parse(values[3], culture);
             double y4 = Double.Parse(values[4], culture);
-            double y5 = Double.Parse(values[5], culture);
+            //double y5 = Double.Parse(values[5], culture);
             //double y6 = Double.Parse(values[6], culture);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
             Point p3 = new Point(x, y3);
             Point p4 = new Point(x, y4);
-            Point p5 = new Point(x, y5);
+            //Point p5 = new Point(x, y5);
             //Point p6 = new Point(x, y6);
 
             source1.AppendAsync(Dispatcher, p1);
             source2.AppendAsync(Dispatcher, p2);
             source3.AppendAsync(Dispatcher, p3);
             source4.AppendAsync(Dispatcher, p4);
-            source5.AppendAsync(Dispatcher, p5);
+            //source5.AppendAsync(Dispatcher, p5);
             //source6.AppendAsync(Dispatcher, p6);
         }
 
