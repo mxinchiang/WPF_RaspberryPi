@@ -90,22 +90,22 @@ namespace raspberrypi_client
             double y2 = Double.Parse(values[2], culture);
             double y3 = Double.Parse(values[3], culture);
             double y4 = Double.Parse(values[4], culture);
-            //double y5 = Double.Parse(values[5], culture);
-            //double y6 = Double.Parse(values[6], culture);
+            double y5 = Double.Parse(values[5], culture);
+            double y6 = Double.Parse(values[6], culture);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
             Point p3 = new Point(x, y3);
             Point p4 = new Point(x, y4);
-            //Point p5 = new Point(x, y5);
-            //Point p6 = new Point(x, y6);
+            Point p5 = new Point(x, y5);
+            Point p6 = new Point(x, y6);
 
             source1.AppendAsync(Dispatcher, p1);
             source2.AppendAsync(Dispatcher, p2);
             source3.AppendAsync(Dispatcher, p3);
             source4.AppendAsync(Dispatcher, p4);
-            //source5.AppendAsync(Dispatcher, p5);
-            //source6.AppendAsync(Dispatcher, p6);
+            source5.AppendAsync(Dispatcher, p5);
+            source6.AppendAsync(Dispatcher, p6);
         }
 
         private void StartListen()
@@ -113,18 +113,46 @@ namespace raspberrypi_client
             //try
             //{
             string recvStr = "";
+            string recvStr1 = "";
+            string recvStr2 = "";
+            string[] sArray;
             byte[] recvBytes = new byte[64];
             int bytes = 0;
             num = 0;
             while (true)
             {
                 bytes = c.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
-                if (bytes > 0)
+                if (bytes >0)
                 {
-                    recvStr += Encoding.UTF8.GetString(recvBytes, 0, bytes).TrimEnd('\n');
-                    richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
-                    DrawingLines(recvStr);
-                    recvStr = "";
+                    recvStr = Encoding.UTF8.GetString(recvBytes, 0, bytes);
+
+                    if (recvStr.Contains("Alarm"))
+                    {
+                        richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
+                    }
+                    else if (recvStr.Length >= 40)
+                    {
+                        sArray = recvStr.Split('\n');
+                        recvStr1 = sArray[0];
+                        if (recvStr1.Length < 39)
+                        {
+                            recvStr1 = recvStr2 + recvStr1;
+                            richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
+                            DrawingLines(recvStr1);
+                            sArray[0] = "";
+                        }
+                        recvStr2 = sArray[1];
+                        if (recvStr1.Length == 39)
+                        {
+                            richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
+                            DrawingLines(recvStr1);
+                            sArray[0] = "";
+                        }
+                    }
+                    else
+                    {
+
+                    }
                 }
                 Array.Clear(recvBytes, 0, recvBytes.Length);
             }
@@ -133,6 +161,12 @@ namespace raspberrypi_client
             //{
             //    MessageBox.Show(ex.Message);
             //}
+        }
+
+        private void OnNewMessageReceived(string msg)
+        {
+            if (richTextBox.Dispatcher != null)
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
         }
 
         private void connect_Click(object sender, RoutedEventArgs e)
@@ -151,10 +185,10 @@ namespace raspberrypi_client
         {
             try
             {
-                string sendStr = "change_interval " + sendMessage.Text +"\0";
+                string sendStr = "change_interval " + sendMessage.Text + "\0";
                 byte[] bs = Encoding.ASCII.GetBytes(sendStr);
                 c.Send(bs, bs.Length, 0);
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + "change interval " + sendMessage.Text +"s");
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + "change interval " + sendMessage.Text + "s");
                 sendMessage.Clear();
             }
             catch (ArgumentNullException ex1)
@@ -214,6 +248,12 @@ namespace raspberrypi_client
             System.Diagnostics.Process.GetCurrentProcess().Kill();
             Application.Current.Shutdown();
         }
+
+        private void plotterD1_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ChartPlotter chart = sender as ChartPlotter;
+            Point p = e.GetPosition(this).ScreenToData(chart.Transform);
+        }
     }
 
     public class FtpUpDown
@@ -251,12 +291,12 @@ namespace raspberrypi_client
                     return false;
                 }
                 string url = "ftp://" + ftpServerIP + "//home/pi/TestFile/" + fileName;
-                Connect(url); 
+                Connect(url);
                 reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
                 Stream ftpStream = response.GetResponseStream();
                 long cl = response.ContentLength;
-                int bufferSize = 2048;
+                int bufferSize = 4096;
                 int readCount;
                 byte[] buffer = new byte[bufferSize];
                 readCount = ftpStream.Read(buffer, 0, bufferSize);

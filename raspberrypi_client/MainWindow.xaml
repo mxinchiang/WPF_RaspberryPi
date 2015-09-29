@@ -16,7 +16,7 @@
         <Grid Name="gridColumn1" Grid.Row="0">
             <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22" Width="24"/>
             <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22" Width="45"/>
-            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.191.2" VerticalAlignment="Top" Width="132"/>
+            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.1.114" VerticalAlignment="Top" Width="132"/>
             <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
             <Button x:Name="connect" Content="Connect" Margin="358,16,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
         </Grid>
@@ -44,7 +44,8 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <d3:ChartPlotter x:Name="plotterD1" Grid.Row="0"/>
+                <d3:ChartPlotter x:Name="plotterD1" Grid.Row="0" MouseDoubleClick="plotterD1_MouseDoubleClick">
+                </d3:ChartPlotter>  
                 <d3:ChartPlotter x:Name="plotterD2" Grid.Row="1"/>
                 <d3:ChartPlotter x:Name="plotterD3" Grid.Row="2"/>
             </Grid>
