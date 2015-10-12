@@ -16,7 +16,7 @@
         <Grid Name="gridColumn1" Grid.Row="0">
             <Label x:Name="IP" Content="IP:" HorizontalAlignment="Left" Margin="24,16,0,0" VerticalAlignment="Top" Height="22" Width="24"/>
             <Label x:Name="PORT" Content="PORT:" HorizontalAlignment="Left" Margin="198,16,0,0" VerticalAlignment="Top" Height="22" Width="45"/>
-            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.1.114" VerticalAlignment="Top" Width="132"/>
+            <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.1.111" VerticalAlignment="Top" Width="132"/>
             <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
             <Button x:Name="connect" Content="Connect" Margin="358,16,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
         </Grid>
@@ -64,10 +64,10 @@
                     </FlowDocument>
                 </RichTextBox>
                 <Label x:Name="label" Content="MessageBox：" HorizontalAlignment="Left" Margin="10,3,0,0" Grid.Row="1" VerticalAlignment="Top" Height="25" Width="94"/>
-                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_2" Margin="25,89,23,0" VerticalAlignment="Top" Height="26"/>
-                <Rectangle Fill="#FF00C800" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_1" Margin="25,33,23,0" VerticalAlignment="Top" Height="26"/>
-                <Label x:Name="label1" Content="Flood warning" Margin="28,28,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16" FontWeight="Bold" Foreground="#FF00C800" Height="31"/>
-                <Label x:Name="label1_Copy" Content="Shake warning" Margin="25,84,23,0" VerticalAlignment="Top" FontWeight="Bold" FontFamily="Segoe UI Black" FontSize="16" Foreground="#FF00C800" Height="31"/>
+                <Rectangle Fill="Green" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_2" Margin="25,89,23,0" VerticalAlignment="Top" Height="26"/>
+                <Rectangle Fill="Green" Stroke="#FF000000" StrokeThickness="0" RadiusX="10.031" RadiusY="10.031" RenderTransformOrigin="0.5,0.5" x:Name="RoundRect_1" Margin="25,33,23,0" VerticalAlignment="Top" Height="26"/>
+                <Label x:Name="label_water" Content="Flood warning" Margin="28,28,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16" FontWeight="Bold" Foreground="Green" Height="31"/>
+                <Label x:Name="label_acc" Content="Shake warning" Margin="25,84,23,0" VerticalAlignment="Top" FontFamily="Segoe WP Black" FontSize="16"  FontWeight="Bold" Foreground="Green"  Height="31"/>
                 <Label x:Name="label2" Content="Abnormal alarm：" Margin="10,-2,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="115" Height="25"/>
             </Grid>
         </Grid>
@@ -83,7 +83,8 @@
             <TextBox x:Name="sendMessage" Margin="162,0,0,77" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
             <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="46,0,0,77" Height="25" VerticalAlignment="Bottom"/>
             <Button x:Name="send" Content="Change interval" Margin="398,0,0,77" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
-            <Button x:Name="close" Content="Close" Margin="518,0,0,33" Click="close_Click" Height="67" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="94"/>
+            <Button x:Name="close" Content="Close" Margin="518,0,0,33" Click="close_Click" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
+            <Button x:Name="reset" Content="Reset alarm" Margin="518,0,0,77" Click="reset_Click"  Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
         </Grid>
     </Grid>
 </Window>

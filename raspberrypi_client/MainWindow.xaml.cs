@@ -126,27 +126,38 @@ namespace raspberrypi_client
                 {
                     recvStr = Encoding.UTF8.GetString(recvBytes, 0, bytes);
 
-                    if (recvStr.Contains("Alarm"))
+                    if (recvStr.Contains("Alarm water"))
                     {
                         richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
+                        label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), recvStr);
                     }
-                    else if (recvStr.Length >= 40)
+                    else if (recvStr.Contains("Alarm acc"))
+                    {
+                        richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
+                        label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), recvStr);
+                    }
+                    else if (recvStr.Length >= 15)
                     {
                         sArray = recvStr.Split('\n');
                         recvStr1 = sArray[0];
-                        if (recvStr1.Length < 39)
+                        if (recvStr1.Length < 40)
                         {
                             recvStr1 = recvStr2 + recvStr1;
                             richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
                             DrawingLines(recvStr1);
                             sArray[0] = "";
+                            recvStr1 = "";
+                            recvStr2 = "";
                         }
                         recvStr2 = sArray[1];
-                        if (recvStr1.Length == 39)
+                        if (recvStr1.Length == 40)
                         {
                             richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
                             DrawingLines(recvStr1);
                             sArray[0] = "";
+                            sArray[1] = "";
+                            recvStr1 = "";
+                            recvStr2 = "";
                         }
                     }
                     else
@@ -226,10 +237,25 @@ namespace raspberrypi_client
         }
 
         private delegate void WriteDelegate(string str);
+
         private void ShowText(string text)
         {
             richTextBox.AppendText(text + "\n");
             richTextBox.ScrollToEnd();
+
+        }
+
+        private delegate void ShowAlarm(string text);
+        private void showalarm(string text)
+        {
+            if (text.Contains("water"))
+            {
+                label_water.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            if (text.Contains("acc"))
+            {
+                label_acc.Foreground = new SolidColorBrush(Colors.Red);
+            }
 
         }
 
@@ -253,6 +279,12 @@ namespace raspberrypi_client
         {
             ChartPlotter chart = sender as ChartPlotter;
             Point p = e.GetPosition(this).ScreenToData(chart.Transform);
+        }
+
+        private void reset_Click(object sender, RoutedEventArgs e)
+        {
+            label_water.Foreground = new SolidColorBrush(Colors.Green);
+            label_acc.Foreground = new SolidColorBrush(Colors.Green);
         }
     }
 
