@@ -27,6 +27,7 @@ namespace raspberrypi_client
         ObservableDataSource<Point> source4 = null;
         ObservableDataSource<Point> source5 = null;
         ObservableDataSource<Point> source6 = null;
+        bool reset_alarm = false;
 
         public MainWindow()
         {
@@ -64,15 +65,22 @@ namespace raspberrypi_client
 
         private void InitClient()
         {
-            int port = Convert.ToInt32(xport.Text);
-            string host = xip.Text;
-            IPAddress ip = IPAddress.Parse(host);
-            IPEndPoint ipe = null;
-            ipe = new IPEndPoint(ip, port);
-            c = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//Create a Socket
-            c.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Connect to Server...");
-            c.Connect(ipe);
+            //try
+            //{
+                int port = Convert.ToInt32(xport.Text);
+                string host = xip.Text;
+                IPAddress ip = IPAddress.Parse(host);
+                IPEndPoint ipe = null;
+                ipe = new IPEndPoint(ip, port);
+                c = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);//Create a Socket
+                c.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Connect to Server...");
+                c.Connect(ipe);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
             Listen = new Thread(new ThreadStart(this.StartListen));
             Listen.IsBackground = true;
             Listen.Start();
@@ -112,57 +120,37 @@ namespace raspberrypi_client
         {
             //try
             //{
-            string recvStr = "";
-            string recvStr1 = "";
-            string recvStr2 = "";
-            string[] sArray;
+            StringBuilder sb = new StringBuilder();             //这个是用来保存：接收到了的，但是还没有结束的消息
+            string terminateString = "\n";
             byte[] recvBytes = new byte[64];
             int bytes = 0;
             num = 0;
             while (true)
             {
                 bytes = c.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
-                if (bytes >0)
+                string rawMsg = Encoding.Default.GetString(recvBytes, 0, recvBytes.Length);
+                int rnFixLength = terminateString.Length;         //这个是指消息结束符的长度，此处为\n
+                for (int i = 0; i < rawMsg.Length;)               //遍历接收到的整个buffer文本
                 {
-                    recvStr = Encoding.UTF8.GetString(recvBytes, 0, bytes);
-
-                    if (recvStr.Contains("Alarm water"))
+                    if (i <= rawMsg.Length - rnFixLength)
                     {
-                        richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
-                        label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), recvStr);
-                    }
-                    else if (recvStr.Contains("Alarm acc"))
-                    {
-                        richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr);
-                        label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), recvStr);
-                    }
-                    else if (recvStr.Length >= 15)
-                    {
-                        sArray = recvStr.Split('\n');
-                        recvStr1 = sArray[0];
-                        if (recvStr1.Length < 40)
+                        if (rawMsg.Substring(i, rnFixLength) != terminateString)//非消息结束符，则加入sb
                         {
-                            recvStr1 = recvStr2 + recvStr1;
-                            richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
-                            DrawingLines(recvStr1);
-                            sArray[0] = "";
-                            recvStr1 = "";
-                            recvStr2 = "";
+                            sb.Append(rawMsg[i]);
+                            i++;
                         }
-                        recvStr2 = sArray[1];
-                        if (recvStr1.Length == 40)
+                        else
                         {
-                            richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + recvStr1);
-                            DrawingLines(recvStr1);
-                            sArray[0] = "";
-                            sArray[1] = "";
-                            recvStr1 = "";
-                            recvStr2 = "";
+                            string a = sb.ToString();
+                            this.OnNewMessageReceived(sb.ToString());//找到了消息结束符，触发消息接收完成事件
+                            sb.Clear();
+                            i += rnFixLength;
                         }
                     }
                     else
                     {
-
+                        sb.Append(rawMsg[i]);
+                        i++;
                     }
                 }
                 Array.Clear(recvBytes, 0, recvBytes.Length);
@@ -176,8 +164,22 @@ namespace raspberrypi_client
 
         private void OnNewMessageReceived(string msg)
         {
-            if (richTextBox.Dispatcher != null)
+            msg = msg.Replace("\0","");
+            if (msg.Contains("Alarm water"))
+            {
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
+                label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+            }
+            else if (msg.Contains("Alarm acc"))
+            {
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
+                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+            }
+            else if (msg.Length >= 15)
+            {
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
+                DrawingLines(msg);
+            }
         }
 
         private void connect_Click(object sender, RoutedEventArgs e)
@@ -251,10 +253,24 @@ namespace raspberrypi_client
             if (text.Contains("water"))
             {
                 label_water.Foreground = new SolidColorBrush(Colors.Red);
+                //while (true)
+                //{
+                //    label_water.Foreground = new SolidColorBrush(Colors.Red);
+                //    //Thread.Sleep(1500);
+                //    label_water.Foreground = new SolidColorBrush(Colors.Green);
+                //    if (reset_alarm == true) break;
+                //}
             }
             if (text.Contains("acc"))
             {
                 label_acc.Foreground = new SolidColorBrush(Colors.Red);
+                //while (true)
+                //{
+                //    label_acc.Foreground = new SolidColorBrush(Colors.Red);
+                //    //Thread.Sleep(1500);
+                //    label_acc.Foreground = new SolidColorBrush(Colors.Green);
+                //    if (reset_alarm == true) break;
+                //}
             }
 
         }
@@ -285,6 +301,7 @@ namespace raspberrypi_client
         {
             label_water.Foreground = new SolidColorBrush(Colors.Green);
             label_acc.Foreground = new SolidColorBrush(Colors.Green);
+            //reset_alarm = true;
         }
     }
 
@@ -360,11 +377,11 @@ namespace raspberrypi_client
         {
             _handle = handle;
         }
-        #region IWin32Window Members
+#region IWin32Window Members
         IntPtr System.Windows.Forms.IWin32Window.Handle
         {
             get { return _handle; }
         }
-        #endregion
+#endregion
     }
 }
