@@ -10,6 +10,7 @@ using Microsoft.Research.DynamicDataDisplay;
 using Microsoft.Research.DynamicDataDisplay.DataSources;
 using System.IO;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace raspberrypi_client
 {
@@ -27,7 +28,11 @@ namespace raspberrypi_client
         ObservableDataSource<Point> source4 = null;
         ObservableDataSource<Point> source5 = null;
         ObservableDataSource<Point> source6 = null;
-        bool reset_alarm = false;
+
+        Thread water;
+        Thread acc;
+        bool first_w = true;
+        bool first_a = true;
 
         public MainWindow()
         {
@@ -60,7 +65,49 @@ namespace raspberrypi_client
             plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST2");
             plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST3");
             plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+        }
 
+        private delegate void ShowAlarm(string text);
+        private void showalarm(string text)
+        {
+            if (text.Contains("water_red"))
+            {
+                label_water.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            if (text.Contains("water_green"))
+            {
+                label_water.Foreground = new SolidColorBrush(Colors.Green);
+            }
+            if (text.Contains("acc_red"))
+            {
+                label_acc.Foreground = new SolidColorBrush(Colors.Red);
+            }
+            if (text.Contains("acc_green"))
+            {
+                label_acc.Foreground = new SolidColorBrush(Colors.Green);
+            }
+        }
+
+        private void warming_water()
+        {
+            while (true)
+            {
+                label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), "water_red");
+                Thread.Sleep(500);
+                label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), "water_green");
+                Thread.Sleep(500);
+            }
+        }
+
+        private void warming_acc()
+        {
+            while (true)
+            {
+                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), "acc_red");
+                Thread.Sleep(500);
+                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), "acc_green");
+                Thread.Sleep(500);
+            }
         }
 
         private void InitClient()
@@ -168,12 +215,24 @@ namespace raspberrypi_client
             if (msg.Contains("Alarm water"))
             {
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-                label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                //label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                if (first_w)
+                {
+                    first_w = false;
+                    water = new Thread(warming_water);
+                    water.Start();
+                }
             }
             else if (msg.Contains("Alarm acc"))
             {
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                //label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                if (first_a)
+                {
+                    first_a = false;
+                    acc = new Thread(warming_acc);
+                    acc.Start();
+                }
             }
             else if (msg.Length >= 15)
             {
@@ -247,33 +306,18 @@ namespace raspberrypi_client
 
         }
 
-        private delegate void ShowAlarm(string text);
-        private void showalarm(string text)
-        {
-            if (text.Contains("water"))
-            {
-                label_water.Foreground = new SolidColorBrush(Colors.Red);
-                //while (true)
-                //{
-                //    label_water.Foreground = new SolidColorBrush(Colors.Red);
-                //    //Thread.Sleep(1500);
-                //    label_water.Foreground = new SolidColorBrush(Colors.Green);
-                //    if (reset_alarm == true) break;
-                //}
-            }
-            if (text.Contains("acc"))
-            {
-                label_acc.Foreground = new SolidColorBrush(Colors.Red);
-                //while (true)
-                //{
-                //    label_acc.Foreground = new SolidColorBrush(Colors.Red);
-                //    //Thread.Sleep(1500);
-                //    label_acc.Foreground = new SolidColorBrush(Colors.Green);
-                //    if (reset_alarm == true) break;
-                //}
-            }
-
-        }
+        //private delegate void ShowAlarm(string text);
+        //private void showalarm(string text)
+        //{
+        //    if (text.Contains("water"))
+        //    {
+        //        label_water.Foreground = new SolidColorBrush(Colors.Red);
+        //    }
+        //    if (text.Contains("acc"))
+        //    {
+        //        label_acc.Foreground = new SolidColorBrush(Colors.Red);
+        //    }
+        //}
 
 
         private void close_Click(object sender, RoutedEventArgs e)
@@ -299,9 +343,16 @@ namespace raspberrypi_client
 
         private void reset_Click(object sender, RoutedEventArgs e)
         {
+            first_w = true;
+            first_a = true;
+            try
+            {
+                acc.Abort();
+                water.Abort();
+            }
+            catch { }
             label_water.Foreground = new SolidColorBrush(Colors.Green);
             label_acc.Foreground = new SolidColorBrush(Colors.Green);
-            //reset_alarm = true;
         }
     }
 
