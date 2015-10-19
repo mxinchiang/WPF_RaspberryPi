@@ -61,9 +61,9 @@ namespace raspberrypi_client
             // Add all three graphs. Colors are not specified and chosen random
             plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
             plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
-            plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST1");
-            plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST2");
-            plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST3");
+            plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
+            plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
+            plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
             plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
         }
 
