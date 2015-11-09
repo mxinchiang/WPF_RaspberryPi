@@ -29,6 +29,13 @@ namespace raspberrypi_client
         ObservableDataSource<Point> source5 = null;
         ObservableDataSource<Point> source6 = null;
 
+        private LineGraph graphT = new LineGraph();
+        private LineGraph graphH = new LineGraph();
+        private LineGraph graphD1 = new LineGraph();
+        private LineGraph graphD2 = new LineGraph();
+        private LineGraph graphD3 = new LineGraph();
+        private LineGraph graphP = new LineGraph();
+
         Thread water;
         Thread acc;
         bool first_w = true;
@@ -59,12 +66,12 @@ namespace raspberrypi_client
             source6.SetXYMapping(p => p);
 
             // Add all three graphs. Colors are not specified and chosen random
-            plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
-            plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
-            plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
-            plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
-            plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
-            plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+            graphT = plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
+            graphH = plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
+            graphD1 = plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
+            graphD2 = plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
+            graphD3 = plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
+            graphP = plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
         }
 
         private delegate void ShowAlarm(string text);
@@ -133,6 +140,12 @@ namespace raspberrypi_client
             Listen.Start();
         }
 
+        //private void ShowPoint(string recvStr)
+        //{
+        //    string[] values = recvStr.Split(' ');
+        //    TH_l.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
+        //}
+
         private void DrawingLines(string recvStr)
         {
             CultureInfo culture = CultureInfo.InvariantCulture;
@@ -140,13 +153,13 @@ namespace raspberrypi_client
             string[] values = recvStr.Split(' ');
             values[0] = (num++).ToString();
 
-            double x = Double.Parse(values[0], culture);
-            double y1 = Double.Parse(values[1], culture);
-            double y2 = Double.Parse(values[2], culture);
-            double y3 = Double.Parse(values[3], culture);
-            double y4 = Double.Parse(values[4], culture);
-            double y5 = Double.Parse(values[5], culture);
-            double y6 = Double.Parse(values[6], culture);
+            double x = double.Parse(values[0], culture);
+            double y1 = double.Parse(values[1], culture);
+            double y2 = double.Parse(values[2], culture);
+            double y3 = double.Parse(values[3], culture);
+            double y4 = double.Parse(values[4], culture);
+            double y5 = double.Parse(values[5], culture);
+            double y6 = double.Parse(values[6], culture);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
@@ -189,7 +202,7 @@ namespace raspberrypi_client
                         else
                         {
                             string a = sb.ToString();
-                            this.OnNewMessageReceived(sb.ToString());//找到了消息结束符，触发消息接收完成事件
+                            OnNewMessageReceived(sb.ToString());//找到了消息结束符，触发消息接收完成事件
                             sb.Clear();
                             i += rnFixLength;
                         }
@@ -238,6 +251,7 @@ namespace raspberrypi_client
             {
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
                 DrawingLines(msg);
+                SetLabel(msg);
             }
         }
 
@@ -245,6 +259,41 @@ namespace raspberrypi_client
         {
             try
             {
+                plotterT.Children.Remove(graphT);
+                plotterT.Children.Remove(graphH);
+                plotterD1.Children.Remove(graphD1);
+                plotterD2.Children.Remove(graphD2);
+                plotterD3.Children.Remove(graphD3);
+                plotterP.Children.Remove(graphP);
+
+                // Create first source
+                source1 = new ObservableDataSource<Point>();
+                // Set identity mapping of point in collection to point on plot
+                source1.SetXYMapping(p => p);
+
+                source2 = new ObservableDataSource<Point>();
+                source2.SetXYMapping(p => p);
+
+                source3 = new ObservableDataSource<Point>();
+                source3.SetXYMapping(p => p);
+
+                source4 = new ObservableDataSource<Point>();
+                source4.SetXYMapping(p => p);
+
+                source5 = new ObservableDataSource<Point>();
+                source5.SetXYMapping(p => p);
+
+                source6 = new ObservableDataSource<Point>();
+                source6.SetXYMapping(p => p);
+
+                // Add all three graphs. Colors are not specified and chosen random
+                graphT = plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
+                graphH = plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
+                graphD1 = plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
+                graphD2 = plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
+                graphD3 = plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
+                graphP = plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+
                 InitClient();
             }
             catch (Exception ex)
@@ -304,6 +353,35 @@ namespace raspberrypi_client
             richTextBox.AppendText(text + "\n");
             richTextBox.ScrollToEnd();
 
+        }
+
+        //private delegate void LabelDelegate(string str);
+
+        //private void ShowLabel(string text)
+        //{
+        //    TH_l.Content=
+
+        //}
+
+        public void SetLabel(string recvStr)
+        {
+            string[] values = recvStr.Split(' ');
+            if (Dispatcher.Thread != Thread.CurrentThread)
+            {
+                T_l.Dispatcher.Invoke(new Action(() =>
+                {
+                    T_l.Content = values[1];
+                    H_l.Content = values[2];
+                    D1_l.Content = values[3];
+                    D2_l.Content = values[4];
+                    D3_l.Content = values[5];
+                    P_l.Content = values[6];
+                }));
+            }
+            else
+            {
+
+            }
         }
 
         //private delegate void ShowAlarm(string text);

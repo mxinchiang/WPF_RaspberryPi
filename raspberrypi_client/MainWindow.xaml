@@ -37,6 +37,9 @@
                 </Grid.RowDefinitions>
                 <d3:ChartPlotter x:Name="plotterT" Grid.Row="0"/>
                 <d3:ChartPlotter x:Name="plotterP" Grid.Row="1"/>
+                <Label x:Name="T_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="P_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                <Label x:Name="H_l" Content="" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top"/>
             </Grid>
             <Grid Name="gridMiddleColumn" Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -45,9 +48,12 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <d3:ChartPlotter x:Name="plotterD1" Grid.Row="0" MouseDoubleClick="plotterD1_MouseDoubleClick">
-                </d3:ChartPlotter>  
+                </d3:ChartPlotter>
                 <d3:ChartPlotter x:Name="plotterD2" Grid.Row="1"/>
                 <d3:ChartPlotter x:Name="plotterD3" Grid.Row="2"/>
+                <Label x:Name="D1_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="D2_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                <Label x:Name="D3_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
             </Grid>
             <Grid Name="gridRightColumn" Grid.Column="3">
                 <Grid.RowDefinitions>
