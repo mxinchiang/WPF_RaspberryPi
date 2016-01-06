@@ -41,6 +41,8 @@ namespace raspberrypi_client
         bool first_w = true;
         bool first_a = true;
 
+        DispatcherTimer timer = new DispatcherTimer();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -72,9 +74,14 @@ namespace raspberrypi_client
             graphD2 = plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
             graphD3 = plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
             graphP = plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+
+            timer.Tick += new EventHandler(timer_Tick);
+            timer.Interval = new TimeSpan(1000);
         }
 
         private delegate void ShowAlarm(string text);
+        private delegate void WriteDelegate(string str);
+
         private void showalarm(string text)
         {
             if (text.Contains("water_red"))
@@ -95,10 +102,39 @@ namespace raspberrypi_client
             }
         }
 
+        private void ShowText(string text)
+        {
+            richTextBox.UndoLimit = 50;
+            richTextBox.AppendText(text + "\n");
+            richTextBox.ScrollToEnd();
+        }
+
+        public void SetLabel(string recvStr)
+        {
+            string[] values = recvStr.Split(' ');
+            if (Dispatcher.Thread != Thread.CurrentThread)
+            {
+                T_l.Dispatcher.Invoke(new Action(() =>
+                {
+                    T_l.Content = values[1];
+                    H_l.Content = values[2];
+                    D1_l.Content = values[3];
+                    D2_l.Content = values[4];
+                    D3_l.Content = values[5];
+                    P_l.Content = Math.Round(((double.Parse(values[6]) - 50) / 10),2).ToString();
+                }));
+            }
+            else
+            {
+
+            }
+        }
+
         private void warming_water()
         {
             while (true)
             {
+                //waitCallCarHandler.WaitOne();
                 label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), "water_red");
                 Thread.Sleep(500);
                 label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), "water_green");
@@ -109,6 +145,17 @@ namespace raspberrypi_client
         private void warming_acc()
         {
             while (true)
+            {
+                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), "acc_red");
+                Thread.Sleep(500);
+                label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), "acc_green");
+                Thread.Sleep(500);
+            }
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            if (timer.IsEnabled == true)
             {
                 label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), "acc_red");
                 Thread.Sleep(500);
@@ -140,12 +187,6 @@ namespace raspberrypi_client
             Listen.Start();
         }
 
-        //private void ShowPoint(string recvStr)
-        //{
-        //    string[] values = recvStr.Split(' ');
-        //    TH_l.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-        //}
-
         private void DrawingLines(string recvStr)
         {
             CultureInfo culture = CultureInfo.InvariantCulture;
@@ -159,7 +200,7 @@ namespace raspberrypi_client
             double y3 = double.Parse(values[3], culture);
             double y4 = double.Parse(values[4], culture);
             double y5 = double.Parse(values[5], culture);
-            double y6 = double.Parse(values[6], culture);
+            double y6 = Math.Round((double.Parse(values[6], culture)-50)/10,2);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
@@ -176,13 +217,54 @@ namespace raspberrypi_client
             source6.AppendAsync(Dispatcher, p6);
         }
 
+        private void OnNewMessageReceived(string msg)
+        {
+            msg = msg.Replace("\0", "");
+            if (msg.Contains("Alarm water"))
+            {
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg + "\n");
+                //label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                if (first_w == true)
+                {
+                    first_w = false;
+                    water = new Thread(warming_water);
+                    water.Start();
+                }
+            }
+            else if (msg.Contains("Alarm acc"))
+            {
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg + "\n");
+                //label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
+                timer.IsEnabled = true;
+                //if (first_a == true)
+                //{
+                //    first_a = false;
+                //    acc = new Thread(warming_acc);
+                //    acc.Start();
+                //}
+            }
+            else if (msg.Length >= 15)
+            {
+                string[] values = msg.Split(' ');
+                double y1 = double.Parse(values[1]);
+                double y2 = double.Parse(values[2]);
+                double y3 = double.Parse(values[3]);
+                double y4 = double.Parse(values[4]);
+                double y5 = double.Parse(values[5]);
+                double y6 = Math.Round((double.Parse(values[6]) - 50) / 10,2);
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server:" + "\nTem:"+y1+"\nHum:"+y2+"\nD1:"+y3+"\nD2:"+y4+"\nD3:"+y5+"\nP:"+y6);//temperature, humidity, dust_one, dust_two, dust_three, PRESSURE
+                DrawingLines(msg);
+                SetLabel(msg);
+            }
+        }
+
         private void StartListen()
         {
             //try
             //{
             StringBuilder sb = new StringBuilder();             //这个是用来保存：接收到了的，但是还没有结束的消息
             string terminateString = "\n";
-            byte[] recvBytes = new byte[64];
+            byte[] recvBytes = new byte[1024];//64
             int bytes = 0;
             num = 0;
             while (true)
@@ -220,39 +302,6 @@ namespace raspberrypi_client
             //{
             //    MessageBox.Show(ex.Message);
             //}
-        }
-
-        private void OnNewMessageReceived(string msg)
-        {
-            msg = msg.Replace("\0","");
-            if (msg.Contains("Alarm water"))
-            {
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-                //label_water.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
-                if (first_w)
-                {
-                    first_w = false;
-                    water = new Thread(warming_water);
-                    water.Start();
-                }
-            }
-            else if (msg.Contains("Alarm acc"))
-            {
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-                //label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
-                if (first_a)
-                {
-                    first_a = false;
-                    acc = new Thread(warming_acc);
-                    acc.Start();
-                }
-            }
-            else if (msg.Length >= 15)
-            {
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg);
-                DrawingLines(msg);
-                SetLabel(msg);
-            }
         }
 
         private void connect_Click(object sender, RoutedEventArgs e)
@@ -336,7 +385,7 @@ namespace raspberrypi_client
                 System.Windows.Forms.DialogResult result = dlg.ShowDialog(win);
                 string localpath = dlg.SelectedPath;
 
-                string filename = year.Text + "-" + mon.Text + "-" + day.Text + ".txt";
+                string filename = year.Text + "-" + mon.Text + "-" + day.Text + ".csv";
                 FtpUpDown ftp = new FtpUpDown(xip.Text, "pi", "raspberry");
                 bool bol = ftp.Download(localpath, filename, out errorinfo);
                 if (bol == true)
@@ -345,58 +394,6 @@ namespace raspberrypi_client
                     MessageBox.Show("Download fail：" + errorinfo + "");
             }
         }
-
-        private delegate void WriteDelegate(string str);
-
-        private void ShowText(string text)
-        {
-            richTextBox.AppendText(text + "\n");
-            richTextBox.ScrollToEnd();
-
-        }
-
-        //private delegate void LabelDelegate(string str);
-
-        //private void ShowLabel(string text)
-        //{
-        //    TH_l.Content=
-
-        //}
-
-        public void SetLabel(string recvStr)
-        {
-            string[] values = recvStr.Split(' ');
-            if (Dispatcher.Thread != Thread.CurrentThread)
-            {
-                T_l.Dispatcher.Invoke(new Action(() =>
-                {
-                    T_l.Content = values[1];
-                    H_l.Content = values[2];
-                    D1_l.Content = values[3];
-                    D2_l.Content = values[4];
-                    D3_l.Content = values[5];
-                    P_l.Content = values[6];
-                }));
-            }
-            else
-            {
-
-            }
-        }
-
-        //private delegate void ShowAlarm(string text);
-        //private void showalarm(string text)
-        //{
-        //    if (text.Contains("water"))
-        //    {
-        //        label_water.Foreground = new SolidColorBrush(Colors.Red);
-        //    }
-        //    if (text.Contains("acc"))
-        //    {
-        //        label_acc.Foreground = new SolidColorBrush(Colors.Red);
-        //    }
-        //}
-
 
         private void close_Click(object sender, RoutedEventArgs e)
         {
@@ -431,6 +428,21 @@ namespace raspberrypi_client
             catch { }
             label_water.Foreground = new SolidColorBrush(Colors.Green);
             label_acc.Foreground = new SolidColorBrush(Colors.Green);
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (Listen != null)
+            {
+                c.Close();
+                if (Listen.ThreadState == ThreadState.Running)
+                {
+                    Listen.Abort();
+                    //Self_send.Abort();
+                }
+            }
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            Application.Current.Shutdown();
         }
     }
 

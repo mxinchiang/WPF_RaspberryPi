@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:raspberrypi_client"
         mc:Ignorable="d"
-        Title="SIEMENS DustSensor Client" Height="600" Width="800">
+        Title="SIEMENS DustSensor Client" Height="600" Width="800" Closing="Window_Closing">
     <Grid Name="gridMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
