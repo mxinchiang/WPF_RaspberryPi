@@ -11,6 +11,7 @@ using Microsoft.Research.DynamicDataDisplay.DataSources;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Windows.Controls;
 
 namespace raspberrypi_client
 {
@@ -27,14 +28,12 @@ namespace raspberrypi_client
         ObservableDataSource<Point> source3 = null;
         ObservableDataSource<Point> source4 = null;
         ObservableDataSource<Point> source5 = null;
-        ObservableDataSource<Point> source6 = null;
 
         private LineGraph graphT = new LineGraph();
         private LineGraph graphH = new LineGraph();
-        private LineGraph graphD1 = new LineGraph();
-        private LineGraph graphD2 = new LineGraph();
-        private LineGraph graphD3 = new LineGraph();
+        private LineGraph graphD = new LineGraph();
         private LineGraph graphP = new LineGraph();
+        private LineGraph graphACC = new LineGraph();
 
         Thread water;
         Thread acc;
@@ -64,18 +63,14 @@ namespace raspberrypi_client
             source5 = new ObservableDataSource<Point>();
             source5.SetXYMapping(p => p);
 
-            source6 = new ObservableDataSource<Point>();
-            source6.SetXYMapping(p => p);
-
             // Add all three graphs. Colors are not specified and chosen random
             graphT = plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
-            graphH = plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
-            graphD1 = plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
-            graphD2 = plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
-            graphD3 = plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
-            graphP = plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+            graphH = plotterH.AddLineGraph(source2, Colors.Green, 2, "HUM");
+            graphD = plotterD.AddLineGraph(source3, Colors.Blue, 2, "DUST");
+            graphP = plotterP.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "PRESS");
+            graphACC = plotterACC.AddLineGraph(source5, Colors.CadetBlue, 2, "ACC");
 
-            timer.Tick += new EventHandler(timer_Tick);
+            timer.Tick += new EventHandler(timer_Tick);//Alarm Signal lamp flicker
             timer.Interval = new TimeSpan(1000);
         }
 
@@ -111,6 +106,7 @@ namespace raspberrypi_client
 
         public void SetLabel(string recvStr)
         {
+            CultureInfo culture = CultureInfo.InvariantCulture;
             string[] values = recvStr.Split(' ');
             if (Dispatcher.Thread != Thread.CurrentThread)
             {
@@ -118,10 +114,13 @@ namespace raspberrypi_client
                 {
                     T_l.Content = values[1];
                     H_l.Content = values[2];
-                    D1_l.Content = values[3];
-                    D2_l.Content = values[4];
-                    D3_l.Content = values[5];
-                    P_l.Content = Math.Round(((double.Parse(values[6]) - 50) / 10),2).ToString();
+                    D_l.Content = values[3];
+                    P_l.Content = values[4];
+                    ACC_l.Content = Math.Round(Math.Sqrt(double.Parse(values[5], culture) * double.Parse(values[5], culture) +
+                                  double.Parse(values[6], culture) * double.Parse(values[6], culture) +
+                                  double.Parse(values[7], culture) * double.Parse(values[7], culture)), 2).ToString();
+                    east.Content = values[8];
+                    north.Content = values[9];//Math.Round(((double.Parse(values[6]) - 50) / 10),2).ToString();
                 }));
             }
             else
@@ -199,22 +198,21 @@ namespace raspberrypi_client
             double y2 = double.Parse(values[2], culture);
             double y3 = double.Parse(values[3], culture);
             double y4 = double.Parse(values[4], culture);
-            double y5 = double.Parse(values[5], culture);
-            double y6 = Math.Round((double.Parse(values[6], culture)-50)/10,2);
+            double y5 = Math.Round(Math.Sqrt(double.Parse(values[5], culture) * double.Parse(values[5], culture) +
+                                  double.Parse(values[6], culture) * double.Parse(values[6], culture) +
+                                  double.Parse(values[7], culture) * double.Parse(values[7], culture)),2);//Math.Round((double.Parse(values[6], culture)-50)/10,2);
 
             Point p1 = new Point(x, y1);
             Point p2 = new Point(x, y2);
             Point p3 = new Point(x, y3);
             Point p4 = new Point(x, y4);
             Point p5 = new Point(x, y5);
-            Point p6 = new Point(x, y6);
 
             source1.AppendAsync(Dispatcher, p1);
             source2.AppendAsync(Dispatcher, p2);
             source3.AppendAsync(Dispatcher, p3);
             source4.AppendAsync(Dispatcher, p4);
             source5.AppendAsync(Dispatcher, p5);
-            source6.AppendAsync(Dispatcher, p6);
         }
 
         private void OnNewMessageReceived(string msg)
@@ -236,23 +234,26 @@ namespace raspberrypi_client
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + msg + "\n");
                 //label_acc.Dispatcher.Invoke(new ShowAlarm(showalarm), msg);
                 timer.IsEnabled = true;
-                //if (first_a == true)
-                //{
-                //    first_a = false;
-                //    acc = new Thread(warming_acc);
-                //    acc.Start();
-                //}
+                if (first_a == true)
+                {
+                    first_a = false;
+                    acc = new Thread(warming_acc);
+                    acc.Start();
+                }
             }
             else if (msg.Length >= 15)
             {
                 string[] values = msg.Split(' ');
-                double y1 = double.Parse(values[1]);
-                double y2 = double.Parse(values[2]);
-                double y3 = double.Parse(values[3]);
-                double y4 = double.Parse(values[4]);
-                double y5 = double.Parse(values[5]);
-                double y6 = Math.Round((double.Parse(values[6]) - 50) / 10,2);
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server:" + "\nTem:"+y1+"\nHum:"+y2+"\nD1:"+y3+"\nD2:"+y4+"\nD3:"+y5+"\nP:"+y6);//temperature, humidity, dust_one, dust_two, dust_three, PRESSURE
+                double y1 = double.Parse(values[1]);        //temp
+                double y2 = double.Parse(values[2]);        //humi
+                double y3 = double.Parse(values[3]);        //dust
+                double y4 = double.Parse(values[4]);        //press
+                double y5 = double.Parse(values[5]);        //acc_x
+                double y6 = double.Parse(values[6]);        //acc_y
+                double y7 = double.Parse(values[7]);        //acc_z
+                double y8 = double.Parse(values[8]);        //gps_e
+                double y9 = double.Parse(values[9]);        //gps_n
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), msg);//temperature, humidity, dust, pressure, acceleration
                 DrawingLines(msg);
                 SetLabel(msg);
             }
@@ -262,15 +263,16 @@ namespace raspberrypi_client
         {
             //try
             //{
-            StringBuilder sb = new StringBuilder();             //这个是用来保存：接收到了的，但是还没有结束的消息
+            StringBuilder sb = new StringBuilder();             //这个是用来保存：接收到了的，但是还没有结束的消息蒋明欣
             string terminateString = "\n";
-            byte[] recvBytes = new byte[1024];//64
+            byte[] recvBytes = new byte[2048];//64
             int bytes = 0;
             num = 0;
             while (true)
             {
                 bytes = c.Receive(recvBytes, recvBytes.Length, 0);//从服务器端接受返回信息
                 string rawMsg = Encoding.Default.GetString(recvBytes, 0, recvBytes.Length);
+                //richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + rawMsg + "\n");
                 int rnFixLength = terminateString.Length;         //这个是指消息结束符的长度，此处为\n
                 for (int i = 0; i < rawMsg.Length;)               //遍历接收到的整个buffer文本
                 {
@@ -284,6 +286,7 @@ namespace raspberrypi_client
                         else
                         {
                             string a = sb.ToString();
+                            //richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "Recv from Server：" + sb.ToString() + "\n");
                             OnNewMessageReceived(sb.ToString());//找到了消息结束符，触发消息接收完成事件
                             sb.Clear();
                             i += rnFixLength;
@@ -309,11 +312,10 @@ namespace raspberrypi_client
             try
             {
                 plotterT.Children.Remove(graphT);
-                plotterT.Children.Remove(graphH);
-                plotterD1.Children.Remove(graphD1);
-                plotterD2.Children.Remove(graphD2);
-                plotterD3.Children.Remove(graphD3);
+                plotterH.Children.Remove(graphH);
+                plotterD.Children.Remove(graphD);
                 plotterP.Children.Remove(graphP);
+                plotterACC.Children.Remove(graphACC);
 
                 // Create first source
                 source1 = new ObservableDataSource<Point>();
@@ -332,16 +334,12 @@ namespace raspberrypi_client
                 source5 = new ObservableDataSource<Point>();
                 source5.SetXYMapping(p => p);
 
-                source6 = new ObservableDataSource<Point>();
-                source6.SetXYMapping(p => p);
-
                 // Add all three graphs. Colors are not specified and chosen random
                 graphT = plotterT.AddLineGraph(source1, Colors.Red, 2, "TEMP");
-                graphH = plotterT.AddLineGraph(source2, Colors.Green, 2, "HUM");
-                graphD1 = plotterD1.AddLineGraph(source3, Colors.Blue, 2, "DUST A");
-                graphD2 = plotterD2.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "DUST D");
-                graphD3 = plotterD3.AddLineGraph(source5, Colors.CadetBlue, 2, "DUST O");
-                graphP = plotterP.AddLineGraph(source6, Colors.Black, 2, "PRESS");
+                graphH = plotterH.AddLineGraph(source2, Colors.Green, 2, "HUM");
+                graphD = plotterD.AddLineGraph(source3, Colors.Blue, 2, "DUST");
+                graphP = plotterP.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "PRESS");
+                graphACC = plotterACC.AddLineGraph(source5, Colors.CadetBlue, 2, "ACC");
 
                 InitClient();
             }
@@ -353,12 +351,13 @@ namespace raspberrypi_client
 
         private void send_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show(comboBox.Text);
             try
             {
-                string sendStr = "change_interval " + sendMessage.Text + "\0";
+                string sendStr = "change_interval " + comboBox.Text + " " + sendMessage.Text + "\0";
                 byte[] bs = Encoding.ASCII.GetBytes(sendStr);
                 c.Send(bs, bs.Length, 0);
-                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + "change interval " + sendMessage.Text + "s");
+                richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + comboBox.Text + " interval is changed to " + sendMessage.Text + "s");
                 sendMessage.Clear();
             }
             catch (ArgumentNullException ex1)
@@ -408,12 +407,6 @@ namespace raspberrypi_client
             }
             System.Diagnostics.Process.GetCurrentProcess().Kill();
             Application.Current.Shutdown();
-        }
-
-        private void plotterD1_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            ChartPlotter chart = sender as ChartPlotter;
-            Point p = e.GetPosition(this).ScreenToData(chart.Transform);
         }
 
         private void reset_Click(object sender, RoutedEventArgs e)

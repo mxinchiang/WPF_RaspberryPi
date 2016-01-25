@@ -19,6 +19,12 @@
             <TextBox x:Name="xip" HorizontalAlignment="Left" Height="22" Margin="53,16,0,0" TextWrapping="Wrap" Text="192.168.1.111" VerticalAlignment="Top" Width="132"/>
             <TextBox x:Name="xport" HorizontalAlignment="Left" Height="23" Margin="248,16,0,0" TextWrapping="Wrap" Text="8888" VerticalAlignment="Top" Width="88"/>
             <Button x:Name="connect" Content="Connect" Margin="358,16,0,0" Height="22" VerticalAlignment="Top" Click="connect_Click" HorizontalAlignment="Left" Width="101"/>
+            <Label x:Name="LOCATION" Content="Location:" Margin="0,16,243,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Right" Width="64"/>
+            <Label x:Name="EAST" Content="E:" Margin="0,16,214,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Right" Width="24"/>
+            <Label x:Name="NORTH" Content="N:" Margin="0,16,100,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Right" Width="24"/>
+            <Label x:Name="east" Content="0.00" Margin="0,16,129,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Right" Width="85"/>
+            <Label x:Name="north" Content="0.00" Margin="0,16,15,0" VerticalAlignment="Top" Height="22" HorizontalAlignment="Right" Width="85"/>
+            <Border BorderBrush="#FFB8B4B4" BorderThickness="1" HorizontalAlignment="Right" Margin="0,16,10,0" Width="304" Height="24" VerticalAlignment="Top"/>
         </Grid>
         <Grid Name="gridColumn2" Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -36,10 +42,9 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <d3:ChartPlotter x:Name="plotterT" Grid.Row="0"/>
-                <d3:ChartPlotter x:Name="plotterP" Grid.Row="1"/>
+                <d3:ChartPlotter x:Name="plotterH" Grid.Row="1"/>
                 <Label x:Name="T_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="P_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                <Label x:Name="H_l" Content="" HorizontalAlignment="Left" Margin="50,40,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="H_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top" Grid.Row="1"/>
             </Grid>
             <Grid Name="gridMiddleColumn" Grid.Column="2">
                 <Grid.RowDefinitions>
@@ -47,13 +52,13 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <d3:ChartPlotter x:Name="plotterD1" Grid.Row="0" MouseDoubleClick="plotterD1_MouseDoubleClick">
+                <d3:ChartPlotter x:Name="plotterD" Grid.Row="0">
                 </d3:ChartPlotter>
-                <d3:ChartPlotter x:Name="plotterD2" Grid.Row="1"/>
-                <d3:ChartPlotter x:Name="plotterD3" Grid.Row="2"/>
-                <Label x:Name="D1_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top"/>
-                <Label x:Name="D2_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
-                <Label x:Name="D3_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+                <d3:ChartPlotter x:Name="plotterP" Grid.Row="1"/>
+                <d3:ChartPlotter x:Name="plotterACC" Grid.Row="2"/>
+                <Label x:Name="D_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="P_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+                <Label x:Name="ACC_l" Content="" HorizontalAlignment="Left" Margin="50,10,0,0" Grid.Row="2" VerticalAlignment="Top"/>
             </Grid>
             <Grid Name="gridRightColumn" Grid.Column="3">
                 <Grid.RowDefinitions>
@@ -78,19 +83,29 @@
             </Grid>
         </Grid>
         <Grid Name="gridColumn3" Grid.Row="2" Margin="0,0,0,0">
-            <Label x:Name="Year" Content="Year:" HorizontalAlignment="Left" Margin="46,0,0,32" Height="25" VerticalAlignment="Bottom"/>
-            <Label x:Name="Mon" Content="Mon:" HorizontalAlignment="Left" Margin="182,0,0,32" Height="25" VerticalAlignment="Bottom"/>
-            <Label x:Name="Day" Content="Day:" HorizontalAlignment="Left" Margin="281,0,0,32" Height="25" VerticalAlignment="Bottom"/>
-            <TextBox x:Name="year" Margin="89,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="88" Height="23" VerticalAlignment="Bottom"/>
-            <TextBox x:Name="mon" Margin="227,0,0,32" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
-            <TextBox x:Name="day" Margin="332,0,0,32" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
-            <Button x:Name="download" Content="DownLoad log" Margin="398,0,0,33" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
-            <Label x:Name="second" Content="(s)" HorizontalAlignment="Left" Margin="341,0,0,77" Height="25" VerticalAlignment="Bottom"/>
-            <TextBox x:Name="sendMessage" Margin="162,0,0,77" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="174"/>
-            <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="46,0,0,77" Height="25" VerticalAlignment="Bottom"/>
-            <Button x:Name="send" Content="Change interval" Margin="398,0,0,77" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
-            <Button x:Name="close" Content="Close" Margin="518,0,0,33" Click="close_Click" Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
-            <Button x:Name="reset" Content="Reset alarm" Margin="518,0,0,77" Click="reset_Click"  Height="22" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
+            <Label x:Name="Year" Content="Year:" HorizontalAlignment="Left" Margin="21,0,0,33" Height="25" VerticalAlignment="Bottom"/>
+            <Label x:Name="Mon" Content="Mon:" HorizontalAlignment="Left" Margin="157,0,0,33" Height="25" VerticalAlignment="Bottom"/>
+            <Label x:Name="Day" Content="Day:" HorizontalAlignment="Left" Margin="262,0,0,33" Height="25" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="year" Margin="64,0,0,35" TextWrapping="Wrap" HorizontalAlignment="Left" Width="88" Height="23" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="mon" Margin="202,0,0,35" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="49"/>
+            <TextBox x:Name="day" Margin="302,0,0,35" TextWrapping="Wrap" HorizontalAlignment="Left" Width="45" Height="23" VerticalAlignment="Bottom"/>
+            <Button x:Name="download" Content="DownLoad log" Margin="371,0,0,35" Click="download_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
+            <Label x:Name="second" Content="(s)" HorizontalAlignment="Left" Margin="323,0,0,69" Height="25" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="sendMessage" Margin="248,0,0,69" TextWrapping="Wrap" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="70"/>
+            <Label x:Name="MESSAGE" Content="Sampling interval:" HorizontalAlignment="Left" Margin="21,0,0,69" Height="25" VerticalAlignment="Bottom"/>
+            <Button x:Name="send" Content="Change interval" Margin="371,0,0,69" Click="send_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="105"/>
+            <Button x:Name="close" Content="Close" Margin="492,0,0,35" Click="close_Click" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
+            <Button x:Name="reset" Content="Reset alarm" Margin="492,0,0,69" Click="reset_Click"  Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="103"/>
+            <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Height="23" Margin="139,28,0,0" VerticalAlignment="Top" Width="95">
+                <ComboBoxItem/>
+                <ComboBoxItem>TEMP</ComboBoxItem>
+                <ComboBoxItem>HUMI</ComboBoxItem>
+                <ComboBoxItem>DUST</ComboBoxItem>
+                <ComboBoxItem>PRESS</ComboBoxItem>
+                <ComboBoxItem>ACC</ComboBoxItem>
+            </ComboBox>
+            <Label x:Name="label1" Content="SIEMENS" Margin="0,68,10,10" FontSize="26.667" FontWeight="Bold" HorizontalAlignment="Right" Width="131" Background="White" Foreground="#FF009999"/>
+            <Border BorderBrush="#FFA4A3A3" BorderThickness="1" HorizontalAlignment="Left" Height="86" Margin="10,15,0,0" VerticalAlignment="Top" Width="610"/>
         </Grid>
     </Grid>
 </Window>
