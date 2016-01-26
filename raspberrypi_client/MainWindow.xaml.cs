@@ -11,7 +11,7 @@ using Microsoft.Research.DynamicDataDisplay.DataSources;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.Windows.Controls;
+using System.Windows.Media.Animation;
 
 namespace raspberrypi_client
 {
@@ -70,8 +70,8 @@ namespace raspberrypi_client
             graphP = plotterP.AddLineGraph(source4, Colors.DarkSeaGreen, 2, "PRESS");
             graphACC = plotterACC.AddLineGraph(source5, Colors.CadetBlue, 2, "ACC");
 
-            timer.Tick += new EventHandler(timer_Tick);//Alarm Signal lamp flicker
-            timer.Interval = new TimeSpan(1000);
+            //timer.Tick += new EventHandler(timer_Tick);//Alarm Signal lamp flicker
+            //timer.Interval = new TimeSpan(1000);
         }
 
         private delegate void ShowAlarm(string text);
@@ -95,6 +95,8 @@ namespace raspberrypi_client
             {
                 label_acc.Foreground = new SolidColorBrush(Colors.Green);
             }
+            //Storyboard story = (Storyboard)this.FindResource("Storyboard");
+            //BeginStoryboard(story);
         }
 
         private void ShowText(string text)
@@ -354,7 +356,7 @@ namespace raspberrypi_client
             MessageBox.Show(comboBox.Text);
             try
             {
-                string sendStr = "change_interval " + comboBox.Text + " " + sendMessage.Text + "\0";
+                string sendStr = "change" + comboBox.Text + " " + sendMessage.Text + "\0";
                 byte[] bs = Encoding.ASCII.GetBytes(sendStr);
                 c.Send(bs, bs.Length, 0);
                 richTextBox.Dispatcher.Invoke(new WriteDelegate(ShowText), "<--------- " + comboBox.Text + " interval is changed to " + sendMessage.Text + "s");
@@ -473,7 +475,7 @@ namespace raspberrypi_client
                     errorinfo = string.Format("Local File {0} already exists, can not be downloaded", newFileName);
                     return false;
                 }
-                string url = "ftp://" + ftpServerIP + "//home/pi/TestFile/" + fileName;
+                string url = "ftp://" + ftpServerIP + "//home/pi/LogFiles/" + fileName;
                 Connect(url);
                 reqFTP.Credentials = new NetworkCredential(ftpUserID, ftpPassword);
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();

@@ -7,6 +7,12 @@
         xmlns:local="clr-namespace:raspberrypi_client"
         mc:Ignorable="d"
         Title="SIEMENS DustSensor Client" Height="600" Width="800" Closing="Window_Closing">
+    <Window.Resources>
+        <Storyboard x:Key="Storyboard" BeginTime="0:0:0" AutoReverse="True" RepeatBehavior="Forever" Storyboard.TargetName="label_acc">
+            <ColorAnimation From="Green" To="Red" RepeatBehavior="Forever" Storyboard.TargetProperty="Background.Color">
+            </ColorAnimation>
+        </Storyboard>
+    </Window.Resources>
     <Grid Name="gridMain">
         <Grid.RowDefinitions>
             <RowDefinition Height="50" />
@@ -105,7 +111,7 @@
                 <ComboBoxItem>ACC</ComboBoxItem>
             </ComboBox>
             <Label x:Name="label1" Content="SIEMENS" Margin="0,68,10,10" FontSize="26.667" FontWeight="Bold" HorizontalAlignment="Right" Width="131" Background="White" Foreground="#FF009999"/>
-            <Border BorderBrush="#FFA4A3A3" BorderThickness="1" HorizontalAlignment="Left" Height="86" Margin="10,15,0,0" VerticalAlignment="Top" Width="610"/>
+            <Border BorderBrush="#FFA4A3A3" BorderThickness="1" HorizontalAlignment="Left" Height="83" Margin="10,15,0,0" VerticalAlignment="Top" Width="610"/>
         </Grid>
     </Grid>
 </Window>
